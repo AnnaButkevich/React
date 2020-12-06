@@ -1,24 +1,21 @@
 import React, {Component} from 'react';
-import PostComponent from "../PostComponent/postComponent";
+import {PostComponent} from "../PostComponent/postComponent";
+import {PostService} from "../../Services/postService";
 
-class Allpost extends Component {
 
+export class Allpost extends Component {
 
-    state = {posts: [ ], chosenPost: null};
+    postService = new PostService()
+    state = {posts: [], chosenPost: null};
 
-    componentDidMount() {
-        fetch('http://jsonplaceholder.typicode.com/posts/1/comments')
-            .then(value => value.json())
-            .then(postsFromAPI => {
-                this.setState({posts: postsFromAPI })
-            })
-
-    };
 
     selectThisPost = (id) => {
-        let chosenPost = this.state.posts.find(value => value.id === id);
-        this.setState({chosenPost});
+        this.postService.getPostByID(id).then(value => this.setState({chosenPost: value}))
     };
+
+    componentDidMount() {
+        this.postService.getAllPosts().then(value => this.setState({posts: value.slice(0,5)}))
+    }
 
     render() {
         let {posts, chosenPost} = this.state;
@@ -26,19 +23,18 @@ class Allpost extends Component {
             <div>
                 <h2>Posts</h2>
                 {
-                    posts.map(value =>
-                        (<PostComponent item={value}
-                                        key={value.id}
-                                        selectThisPost = {this.selectThisPost}
-                         />))
+                    posts.map((value) => {
+                        return (<PostComponent item={value}
+                                               key={value.id}
+                                               selectThisPost={this.selectThisPost}
+                        />)
+                    })
                 }
                 <hr/>
                 {
-                    chosenPost && <PostComponent item = {chosenPost}/>
+                    chosenPost && <PostComponent item = {chosenPost} isShowBtn = {true}/>
                 }
             </div>
         );
     }
 }
-
-export default Allpost;

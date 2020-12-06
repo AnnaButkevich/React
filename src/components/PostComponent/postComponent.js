@@ -1,18 +1,16 @@
 import React, {Component} from 'react';
 
-class PostComponent extends Component {
+export class PostComponent extends Component {
 
     render() {
-        let {item, selectThisPost} = this.props
+        let {item, selectThisPost, isShowBtn} = this.props
         return (
             <div>
-                <h3>{item.id}  {item.name}</h3>
+                <h3>{item.id} {item.name}</h3>
                 <p>{item.email}</p>
                 <p>{item.body}</p>
-                <button onClick={() => selectThisPost(item.id)}> Show me </button>
+                {! isShowBtn && <button onClick={() => selectThisPost(item.id)}> Show me</button>}
             </div>
         );
     }
 }
-
-export default PostComponent;
